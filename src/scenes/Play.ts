@@ -64,7 +64,12 @@ export default class Play extends Phaser.Scene {
     const enemy1OffsetX = 0.1;
     const enemy1OffsetY = 0.5;
 
-    const enemy1 = new Enemy1(this, w * enemy1OffsetX, h * enemy1OffsetY, 'ship');
+    const enemy1 = new Enemy1(
+      this,
+      w * enemy1OffsetX,
+      h * enemy1OffsetY,
+      "ship",
+    );
 
     const sacleEnemy = 1;
 
