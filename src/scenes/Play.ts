@@ -17,6 +17,7 @@ export default class Play extends Phaser.Scene {
 
   preload() {
     this.load.image("starfield", starfieldUrl);
+    this.load.image("ship", `ship.png`);
   }
 
   #addKey(
@@ -59,6 +60,15 @@ export default class Play extends Phaser.Scene {
       sizeY,
       color,
     );
+
+    const enemy1OffsetX = 0.1;
+    const enemy1OffsetY = 0.5;
+
+    const enemy1 = new Enemy1(this, w * enemy1OffsetX, h * enemy1OffsetY, 'ship');
+
+    const sacleEnemy = 1;
+
+    enemy1.setScale(sacleEnemy);
   }
 
   update() {
@@ -90,5 +100,41 @@ export default class Play extends Phaser.Scene {
         this.spinner!.y = Number(this.game.config.height) * offsetH;
       });
     }
+  }
+}
+
+class EnemyBase extends Phaser.GameObjects.Sprite {
+  private hp: number;
+
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    hp: number,
+  ) {
+    super(scene, x, y, texture);
+    this.hp = hp;
+    scene.add.existing(this);
+  }
+
+  takeDamage(amount: number) {
+    this.hp -= amount;
+
+    if (this.hp <= 0) {
+      this.destroy();
+    }
+  }
+}
+
+class Enemy1 extends EnemyBase {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    hp: number = 1,
+  ) {
+    super(scene, x, y, texture, hp);
   }
 }
