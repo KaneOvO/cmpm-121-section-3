@@ -11,7 +11,6 @@ export default class Play extends Phaser.Scene {
   spinner?: Phaser.GameObjects.Shape;
 
   rotationSpeed = Phaser.Math.PI2 / 1000; // radians per millisecond
-
   constructor() {
     super("play");
   }
@@ -31,35 +30,64 @@ export default class Play extends Phaser.Scene {
     this.left = this.#addKey("LEFT");
     this.right = this.#addKey("RIGHT");
 
+    const originalX = 0;
+    const originalY = 0;
+
+    const w = Number(this.game.config.width);
+    const h = Number(this.game.config.height);
+
     this.starfield = this.add
       .tileSprite(
-        0,
-        0,
+        originalX,
+        originalY,
         this.game.config.width as number,
         this.game.config.height as number,
         "starfield",
       )
-      .setOrigin(0, 0);
+      .setOrigin(originalX, originalY);
 
-    this.spinner = this.add.rectangle(100, 100, 50, 50, 0xff0000);
+    const offsetW = 0.1;
+    const offsetH = 0.9;
+    const sizeX = 50;
+    const sizeY = 50;
+    const color = 0xff0000;
+
+    this.spinner = this.add.rectangle(
+      w * offsetW,
+      h * offsetH,
+      sizeX,
+      sizeY,
+      color,
+    );
   }
 
-  update(_timeMs: number, delta: number) {
+  update() {
     this.starfield!.tilePositionX -= 4;
 
+    const speed = 5;
+
     if (this.left!.isDown) {
-      this.spinner!.rotation -= delta * this.rotationSpeed;
+      this.spinner!.x -= speed;
     }
     if (this.right!.isDown) {
-      this.spinner!.rotation += delta * this.rotationSpeed;
+      this.spinner!.x += speed;
     }
 
+    const durationTime = 500;
+
+    const offsetH = 0.9;
+
     if (this.fire!.isDown) {
+      const originalY = this.spinner!.y;
+      console.log(this.spinner!.y);
       this.tweens.add({
         targets: this.spinner,
-        scale: { from: 1.5, to: 1 },
-        duration: 300,
-        ease: Phaser.Math.Easing.Sine.Out,
+        y: originalY - Number(this.game.config.height) - this.spinner!.height,
+        duration: durationTime,
+        ease: `linear`,
+      });
+      this.time.delayedCall(700, () => {
+        this.spinner!.y = Number(this.game.config.height) * offsetH;
       });
     }
   }
